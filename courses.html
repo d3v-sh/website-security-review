@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Courses — SpaceEdu</title>
+<meta name="description" content="Explore our celestial catalog of immersive courses covering Earth, Venus, Mars and interplanetary exploration.">
+<link rel="icon" href="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202005_3346cc4d-ec3b-44ab-825c-b18e49f5021a.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prata&family=Hanken+Grotesk:wght@400;500;600;700&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#04101f;
+  --ink:#ffffff;
+  --cyan:#79dce8;
+  --cyan-logo:#5fd0e1;
+  --btn-ink:#071227;
+  --font-serif:'Prata',Georgia,serif;
+  --font-body:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
+  --font-logo:'Poppins',sans-serif;
+}
+html,body{
+  min-height:100%;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+}
+body{
+  position:relative;
+  overflow-x:hidden;
+  padding-top:70px; /* navbar offset */
+}
+
+/* Starfield */
+.stars-container{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+.stars{
+  position:absolute;
+  inset:0;
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, #ffffff, transparent),
+    radial-gradient(1.5px 1.5px at 140px 70px, #79dce8, transparent),
+    radial-gradient(1px 1px at 240px 180px, #ffffff, transparent),
+    radial-gradient(2px 2px at 380px 40px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 520px 140px, rgba(121,220,232,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 680px 220px, #ffffff, transparent),
+    radial-gradient(1px 1px at 820px 90px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(2px 2px at 980px 170px, #79dce8, transparent),
+    radial-gradient(1px 1px at 1150px 50px, #ffffff, transparent),
+    radial-gradient(1.5px 1.5px at 1300px 130px, rgba(255,255,255,0.9), transparent);
+  background-size: 650px 300px;
+  opacity:0.65;
+  animation:starsTwinkle 6s ease-in-out infinite alternate;
+}
+@keyframes starsTwinkle{
+  0%{opacity:0.4}
+  100%{opacity:0.85}
+}
+
+/* Fixed Navbar */
+.navbar{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:70px;
+  background:rgba(4,16,31,0.85);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  z-index:100;
+}
+.nav-inner{
+  max-width:1350px;
+  height:100%;
+  margin:0 auto;
+  padding:0 32px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.logo{
+  font-family:var(--font-logo);
+  font-weight:600;
+  font-size:20px;
+  letter-spacing:-0.2px;
+  line-height:1;
+  color:#fff;
+  text-decoration:none;
+}
+.logo i{
+  font-style:normal;
+  color:var(--cyan-logo);
+}
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:28px;
+}
+.nav-links a{
+  color:rgba(255,255,255,0.85);
+  text-decoration:none;
+  font-size:15px;
+  font-weight:500;
+  transition:color .2s;
+  position:relative;
+}
+.nav-links a:hover{
+  color:var(--cyan);
+}
+.nav-links a.active{
+  color:#fff;
+  font-weight:600;
+}
+.nav-links a.active::after{
+  content:'';
+  position:absolute;
+  bottom:-8px;
+  left:0;
+  right:0;
+  height:2.5px;
+  background:var(--cyan);
+  border-radius:1px;
+}
+.nav-auth{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-left:12px;
+}
+.login-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 22px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.18);
+  color:#fff;
+  font-size:14px;
+  font-weight:600;
+  text-decoration:none;
+  transition:all .2s;
+}
+.login-btn:hover{
+  background:var(--cyan);
+  color:var(--btn-ink);
+  border-color:var(--cyan);
+}
+.user-chip{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:14px;
+  color:rgba(255,255,255,0.9);
+}
+.user-chip .user-name{
+  font-weight:600;
+  color:var(--cyan);
+}
+.logout-btn{
+  background:none;
+  border:1px solid rgba(255,255,255,0.2);
+  color:rgba(255,255,255,0.7);
+  padding:5px 12px;
+  border-radius:14px;
+  font-size:12.5px;
+  cursor:pointer;
+  font-family:inherit;
+  transition:all .2s;
+}
+.logout-btn:hover{
+  color:#ff6b6b;
+  border-color:#ff6b6b;
+}
+
+/* Mobile Nav Toggle */
+.mobile-nav-btn{
+  display:none;
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:8px;
+}
+.mobile-nav-btn span{
+  display:block;
+  width:22px;
+  height:2px;
+  background:#fff;
+  margin:5px 0;
+  border-radius:2px;
+  transition:transform .2s;
+}
+
+/* Hero Banner */
+.hero-banner{
+  position:relative;
+  z-index:2;
+  min-height:220px;
+  padding:60px 32px 50px;
+  text-align:center;
+  background:linear-gradient(180deg, rgba(8,23,46,0.85) 0%, rgba(4,16,31,0.95) 100%),
+             radial-gradient(circle at 50% 20%, rgba(121,220,232,0.15) 0%, transparent 60%);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.hero-title{
+  font-family:var(--font-serif);
+  font-weight:400;
+  font-size:52px;
+  letter-spacing:1px;
+  line-height:1.15;
+  color:#fff;
+  margin-bottom:14px;
+}
+.hero-rule{
+  width:64px;
+  height:3px;
+  background:var(--cyan);
+  border-radius:2px;
+  margin:0 auto 18px;
+  box-shadow:0 0 12px rgba(121,220,232,0.6);
+}
+.hero-sub{
+  font-size:17px;
+  color:rgba(255,255,255,0.8);
+  max-width:680px;
+  margin:0 auto;
+  line-height:1.6;
+}
+
+/* Filter Tabs */
+.filter-bar{
+  position:relative;
+  z-index:10;
+  max-width:1350px;
+  margin:32px auto 0;
+  padding:0 64px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  overflow-x:auto;
+}
+.filter-pill{
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.2);
+  color:rgba(255,255,255,0.85);
+  padding:9px 22px;
+  border-radius:22px;
+  font-size:14.5px;
+  font-weight:600;
+  font-family:inherit;
+  cursor:pointer;
+  transition:all .2s ease;
+  white-space:nowrap;
+}
+.filter-pill:hover{
+  border-color:rgba(255,255,255,0.45);
+  color:#fff;
+}
+.filter-pill.active{
+  background:var(--cyan);
+  color:var(--btn-ink);
+  border-color:var(--cyan);
+  box-shadow:0 0 16px rgba(121,220,232,0.3);
+}
+
+/* Course Grid */
+.catalog-section{
+  position:relative;
+  z-index:5;
+  max-width:1350px;
+  margin:0 auto;
+  padding:36px 64px 80px;
+}
+.course-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:28px;
+}
+
+/* Course Card */
+.course-card{
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  transition:transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s ease, border-color .3s;
+}
+.course-card:hover{
+  transform:translateY(-5px);
+  border-color:rgba(121,220,232,0.35);
+  box-shadow:0 16px 36px rgba(0,0,0,0.5), 0 0 24px rgba(121,220,232,0.15);
+}
+
+/* Card Image & Badge */
+.card-media{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  background:#020b17;
+  overflow:hidden;
+}
+.card-media img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .5s ease;
+}
+.course-card:hover .card-media img{
+  transform:scale(1.05);
+}
+.planet-badge{
+  position:absolute;
+  top:14px;
+  right:14px;
+  padding:5px 14px;
+  border-radius:14px;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:0.8px;
+  text-transform:uppercase;
+  line-height:1;
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+}
+.planet-badge.earth{
+  background:var(--cyan);
+  color:var(--btn-ink);
+}
+.planet-badge.venus{
+  background:#f9a84d;
+  color:#271207;
+}
+.planet-badge.mars{
+  background:#e05a5a;
+  color:#fff;
+}
+
+/* Card Content */
+.card-body{
+  padding:24px;
+  display:flex;
+  flex-direction:column;
+  flex:1;
+}
+.card-title{
+  font-family:var(--font-serif);
+  font-size:20px;
+  font-weight:400;
+  line-height:1.3;
+  color:#fff;
+  margin-bottom:10px;
+}
+.card-desc{
+  font-size:14px;
+  line-height:1.55;
+  color:rgba(255,255,255,0.65);
+  margin-bottom:20px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  flex:1;
+}
+.card-meta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
+  padding-top:14px;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+.meta-duration{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:13.5px;
+  color:rgba(255,255,255,0.7);
+}
+.meta-duration svg{
+  width:16px;
+  height:16px;
+  stroke:var(--cyan);
+}
+.meta-price{
+  font-size:22px;
+  font-weight:700;
+  color:var(--cyan);
+  letter-spacing:-0.2px;
+}
+
+/* Enroll Button */
+.btn-enroll{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:46px;
+  border-radius:23px;
+  border:none;
+  background:linear-gradient(180deg,#ffffff 0%,#d8ecfe 9%,#dceefe 72%,#f4f9ff 100%);
+  color:var(--btn-ink);
+  font-family:var(--font-body);
+  font-weight:700;
+  font-size:15px;
+  letter-spacing:0.2px;
+  cursor:pointer;
+  text-decoration:none;
+  box-shadow:0 4px 14px rgba(255,255,255,0.18), inset 0 0 0 1.5px rgba(255,255,255,0.9);
+  transition:all .22s ease;
+}
+.btn-enroll:hover{
+  transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(255,255,255,0.28), inset 0 0 0 1.5px rgba(255,255,255,1);
+}
+
+/* Skeleton Loading */
+.skeleton-card{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:20px;
+  overflow:hidden;
+  animation:pulse 1.4s ease-in-out infinite;
+}
+.skeleton-img{
+  width:100%;
+  aspect-ratio:16/9;
+  background:rgba(255,255,255,0.06);
+}
+.skeleton-body{
+  padding:24px;
+}
+.skeleton-line{
+  height:14px;
+  background:rgba(255,255,255,0.06);
+  border-radius:7px;
+  margin-bottom:12px;
+}
+.skeleton-line.short{
+  width:60%;
+}
+.skeleton-btn{
+  height:46px;
+  background:rgba(255,255,255,0.06);
+  border-radius:23px;
+  margin-top:20px;
+}
+@keyframes pulse{
+  0%,100%{opacity:0.6}
+  50%{opacity:0.25}
+}
+
+/* Empty State */
+.empty-state{
+  grid-column:1/-1;
+  text-align:center;
+  padding:60px 20px;
+}
+.empty-icon{
+  width:64px;
+  height:64px;
+  stroke:rgba(255,255,255,0.4);
+  margin-bottom:16px;
+}
+.empty-title{
+  font-family:var(--font-serif);
+  font-size:24px;
+  color:#fff;
+  margin-bottom:8px;
+}
+.empty-text{
+  font-size:15px;
+  color:rgba(255,255,255,0.6);
+}
+
+/* Responsive adjustments */
+@media(max-width:1024px){
+  .course-grid{
+    grid-template-columns:repeat(2, 1fr);
+  }
+}
+@media(max-width:768px){
+  .catalog-section{
+    padding:28px 24px 60px;
+  }
+  .filter-bar{
+    padding:0 24px;
+  }
+  .hero-title{
+    font-size:38px;
+  }
+}
+@media(max-width:640px){
+  .course-grid{
+    grid-template-columns:1fr;
+  }
+  .nav-links{
+    gap:16px;
+  }
+  .nav-inner{
+    padding:0 18px;
+  }
+  .hero-banner{
+    padding:40px 18px 36px;
+  }
+  .hero-title{
+    font-size:32px;
+  }
+  .hero-sub{
+    font-size:15px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="stars-container" aria-hidden="true">
+  <div class="stars"></div>
+</div>
+
+<header class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="/index.html">space<i>edu</i></a>
+    <nav class="nav-links">
+      <a href="/index.html">Planets</a>
+      <a href="/courses.html" class="active">Courses</a>
+      <a href="/enrolled.html">My Courses</a>
+      <div class="nav-auth" id="nav-auth">
+        <!-- Injected via JS based on login state -->
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero-banner">
+    <h1 class="hero-title">Explore the Universe</h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">Immerse yourself in comprehensive, visually stunning space courses led by planetary scientists. Learn from the comfort of Earth.</p>
+  </section>
+
+  <div class="filter-bar" role="tablist" aria-label="Course planet filter">
+    <button class="filter-pill active" data-filter="all" type="button">All Planets</button>
+    <button class="filter-pill" data-filter="earth" type="button">Earth</button>
+    <button class="filter-pill" data-filter="venus" type="button">Venus</button>
+    <button class="filter-pill" data-filter="mars" type="button">Mars</button>
+  </div>
+
+  <section class="catalog-section">
+    <div class="course-grid" id="course-grid">
+      <!-- 6 Skeleton cards on load -->
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-btn"></div></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-btn"></div></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-btn"></div></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-btn"></div></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-btn"></div></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-btn"></div></div></div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  const API_BASE = window.location.origin;
+
+  // Seeded fallback courses in case backend is offline or starting
+  const FALLBACK_COURSES = [
+    {
+      id: "earth-101",
+      slug: "earth-101",
+      title: "Earth 101: Our Living Planet",
+      description: "Explore Earth's ecosystems, geology, atmosphere, and everything that makes our planet uniquely habitable in the cosmos.",
+      planet: "earth",
+      price: 49.99,
+      duration_hours: 12,
+      image_url: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202133_508c64b8-a31e-4290-bdfc-1187df70e0a6.png"
+    },
+    {
+      id: "earth-climate",
+      slug: "earth-climate",
+      title: "Earth's Climate Systems",
+      description: "Dive deep into atmospheric science, ocean currents, and climate change. Understand the forces shaping our world's future.",
+      planet: "earth",
+      price: 79.99,
+      duration_hours: 18,
+      image_url: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202133_508c64b8-a31e-4290-bdfc-1187df70e0a6.png"
+    },
+    {
+      id: "venus-atmosphere",
+      slug: "venus-atmosphere",
+      title: "Venus: The Hellish Twin",
+      description: "Journey to Venus and understand why Earth's nearest neighbor became a runaway greenhouse world, and what it means for our future.",
+      planet: "venus",
+      price: 59.99,
+      duration_hours: 10,
+      image_url: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202133_cf55d1d8-7b59-4a64-80da-d72052ae974e.png"
+    },
+    {
+      id: "venus-exploration",
+      slug: "venus-exploration",
+      title: "Exploring Venus: Past & Future Missions",
+      description: "From Mariner 2 to future atmospheric probes, trace humanity's exploration of our cloud-shrouded sister planet.",
+      planet: "venus",
+      price: 69.99,
+      duration_hours: 14,
+      image_url: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202133_cf55d1d8-7b59-4a64-80da-d72052ae974e.png"
+    },
+    {
+      id: "mars-geology",
+      slug: "mars-geology",
+      title: "Mars: The Red Desert World",
+      description: "Study Mars's geology, Olympus Mons, Valles Marineris, and the evidence for ancient liquid water on the rust-red desert planet.",
+      planet: "mars",
+      price: 54.99,
+      duration_hours: 11,
+      image_url: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202133_0ba6de7c-285d-43dc-b7ab-8c54c73707cb.png"
+    },
+    {
+      id: "mars-colonization",
+      slug: "mars-colonization",
+      title: "Mars Colonization: Science & Strategy",
+      description: "Explore the engineering, biology, and ethical dimensions of establishing a permanent human presence on Mars.",
+      planet: "mars",
+      price: 89.99,
+      duration_hours: 20,
+      image_url: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202133_0ba6de7c-285d-43dc-b7ab-8c54c73707cb.png"
+    }
+  ];
+
+  let allCourses = [];
+  let currentFilter = 'all';
+
+  // Auth state rendering in Navbar
+  function renderNavAuth(){
+    const navAuth = document.getElementById('nav-auth');
+    const token = localStorage.getItem('spaceedu_token');
+    const userStr = localStorage.getItem('spaceedu_user');
+
+    if(token && userStr){
+      try {
+        const user = JSON.parse(userStr);
+        const firstName = (user.name || 'Astronaut').split(' ')[0];
+        navAuth.innerHTML = `
+          <div class="user-chip">
+            <span>Hi, <span class="user-name">${escapeHTML(firstName)}</span></span>
+            <button class="logout-btn" id="logout-btn" type="button">Logout</button>
+          </div>
+        `;
+        document.getElementById('logout-btn').addEventListener('click', function(){
+          localStorage.removeItem('spaceedu_token');
+          localStorage.removeItem('spaceedu_user');
+          window.location.reload();
+        });
+        return;
+      } catch(e){}
+    }
+
+    navAuth.innerHTML = `
+      <a class="login-btn" href="/login.html">Sign In</a>
+    `;
+  }
+
+  function escapeHTML(str){
+    return String(str).replace(/[&<>'"]/g, tag => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[tag] || tag));
+  }
+
+  function renderCourses(){
+    const grid = document.getElementById('course-grid');
+    const filtered = currentFilter === 'all'
+      ? allCourses
+      : allCourses.filter(c => (c.planet || '').toLowerCase() === currentFilter.toLowerCase());
+
+    if(filtered.length === 0){
+      grid.innerHTML = `
+        <div class="empty-state">
+          <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 8v4M12 16h.01"/>
+          </svg>
+          <h2 class="empty-title">No Courses Found</h2>
+          <p class="empty-text">No courses available for the selected planet. Check back soon for new expeditions.</p>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = filtered.map(c => {
+      const planetKey = (c.planet || 'earth').toLowerCase();
+      const priceFmt = Number(c.price).toFixed(2);
+      const hours = c.duration_hours || 10;
+      const img = c.image_url || 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202133_508c64b8-a31e-4290-bdfc-1187df70e0a6.png';
+
+      return `
+        <article class="course-card" data-course-id="${escapeHTML(c.id)}">
+          <div class="card-media">
+            <img src="${escapeHTML(img)}" alt="${escapeHTML(c.title)}" loading="lazy">
+            <span class="planet-badge ${planetKey}">${escapeHTML(planetKey)}</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">${escapeHTML(c.title)}</h3>
+            <p class="card-desc">${escapeHTML(c.description)}</p>
+            <div class="card-meta">
+              <span class="meta-duration">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                ${hours} hours
+              </span>
+              <span class="meta-price">$${priceFmt}</span>
+            </div>
+            <button class="btn-enroll" type="button" data-id="${escapeHTML(c.id)}">Enroll Now</button>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    // Bind enroll buttons
+    grid.querySelectorAll('.btn-enroll').forEach(btn => {
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        const courseId = this.dataset.id;
+        const token = localStorage.getItem('spaceedu_token');
+        if(!token){
+          window.location.href = `/login.html?redirect=/checkout.html?course=${encodeURIComponent(courseId)}`;
+        } else {
+          window.location.href = `/checkout.html?course=${encodeURIComponent(courseId)}`;
+        }
+      });
+    });
+  }
+
+  // Setup Filter Tabs
+  document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', function(){
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+      currentFilter = this.dataset.filter;
+      renderCourses();
+    });
+  });
+
+  // Fetch courses from backend
+  async function loadCourses(){
+    try {
+      const res = await fetch(`${API_BASE}/api/courses`);
+      if(!res.ok) throw new Error('API request failed');
+      const data = await res.json();
+      if(Array.isArray(data) && data.length > 0){
+        allCourses = data;
+      } else {
+        allCourses = FALLBACK_COURSES;
+      }
+    } catch(err){
+      console.warn('Could not fetch from backend, using fallback courses:', err);
+      allCourses = FALLBACK_COURSES;
+    }
+    renderCourses();
+  }
+
+  renderNavAuth();
+  loadCourses();
+})();
+</script>
+</body>
+</html>

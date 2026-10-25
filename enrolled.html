@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Enrolled Courses — SpaceEdu</title>
+<meta name="description" content="Manage and track your active space courses and progress through the solar system.">
+<link rel="icon" href="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202005_3346cc4d-ec3b-44ab-825c-b18e49f5021a.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prata&family=Hanken+Grotesk:wght@400;500;600;700&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#04101f;
+  --ink:#ffffff;
+  --cyan:#79dce8;
+  --cyan-logo:#5fd0e1;
+  --btn-ink:#071227;
+  --font-serif:'Prata',Georgia,serif;
+  --font-body:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
+  --font-logo:'Poppins',sans-serif;
+}
+html,body{
+  min-height:100%;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+}
+body{
+  position:relative;
+  overflow-x:hidden;
+  padding-top:70px;
+}
+
+/* Starfield */
+.stars-container{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+.stars{
+  position:absolute;
+  inset:0;
+  background-image:
+    radial-gradient(1px 1px at 25px 35px, #ffffff, transparent),
+    radial-gradient(1.5px 1.5px at 160px 85px, #79dce8, transparent),
+    radial-gradient(1px 1px at 300px 180px, #ffffff, transparent),
+    radial-gradient(2px 2px at 460px 50px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 620px 160px, rgba(121,220,232,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 800px 220px, #ffffff, transparent),
+    radial-gradient(2px 2px at 1010px 90px, #79dce8, transparent),
+    radial-gradient(1px 1px at 1240px 140px, rgba(255,255,255,0.7), transparent);
+  background-size: 720px 320px;
+  opacity:0.6;
+}
+
+/* Fixed Navbar */
+.navbar{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:70px;
+  background:rgba(4,16,31,0.85);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  z-index:100;
+}
+.nav-inner{
+  max-width:1350px;
+  height:100%;
+  margin:0 auto;
+  padding:0 32px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.logo{
+  font-family:var(--font-logo);
+  font-weight:600;
+  font-size:20px;
+  letter-spacing:-0.2px;
+  line-height:1;
+  color:#fff;
+  text-decoration:none;
+}
+.logo i{
+  font-style:normal;
+  color:var(--cyan-logo);
+}
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:28px;
+}
+.nav-links a{
+  color:rgba(255,255,255,0.85);
+  text-decoration:none;
+  font-size:15px;
+  font-weight:500;
+  transition:color .2s;
+  position:relative;
+}
+.nav-links a:hover{
+  color:var(--cyan);
+}
+.nav-links a.active{
+  color:#fff;
+  font-weight:600;
+}
+.nav-links a.active::after{
+  content:'';
+  position:absolute;
+  bottom:-8px;
+  left:0;
+  right:0;
+  height:2.5px;
+  background:var(--cyan);
+  border-radius:1px;
+}
+.nav-auth{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-left:12px;
+}
+.user-chip{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:14px;
+  color:rgba(255,255,255,0.9);
+}
+.user-chip .user-name{
+  font-weight:600;
+  color:var(--cyan);
+}
+.logout-btn{
+  background:none;
+  border:1px solid rgba(255,255,255,0.2);
+  color:rgba(255,255,255,0.7);
+  padding:5px 12px;
+  border-radius:14px;
+  font-size:12.5px;
+  cursor:pointer;
+  font-family:inherit;
+  transition:all .2s;
+}
+.logout-btn:hover{
+  color:#ff6b6b;
+  border-color:#ff6b6b;
+}
+
+/* Main Content Container */
+.dashboard-wrapper{
+  position:relative;
+  z-index:5;
+  max-width:1350px;
+  margin:0 auto;
+  padding:48px 64px 80px;
+}
+
+/* Dashboard Header */
+.dashboard-header{
+  margin-bottom:36px;
+}
+.page-title{
+  font-family:var(--font-serif);
+  font-size:48px;
+  font-weight:400;
+  color:#fff;
+  line-height:1.15;
+  margin-bottom:8px;
+}
+.user-greeting{
+  font-size:17px;
+  color:rgba(255,255,255,0.75);
+}
+.user-greeting strong{
+  color:var(--cyan);
+  font-weight:600;
+}
+
+/* Stat Cards Row */
+.stats-row{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:24px;
+  margin-bottom:48px;
+}
+.stat-card{
+  background:rgba(255,255,255,0.03);
+  backdrop-filter:blur(30px);
+  -webkit-backdrop-filter:blur(30px);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:24px 28px;
+  display:flex;
+  align-items:center;
+  gap:20px;
+  transition:transform .2s ease, border-color .2s ease;
+}
+.stat-card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(121,220,232,0.3);
+}
+.stat-icon{
+  width:52px;
+  height:52px;
+  border-radius:16px;
+  background:rgba(121,220,232,0.1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+.stat-icon svg{
+  width:26px;
+  height:26px;
+  stroke:var(--cyan);
+}
+.stat-info{
+  display:flex;
+  flex-direction:column;
+}
+.stat-value{
+  font-size:32px;
+  font-weight:700;
+  color:#fff;
+  line-height:1.1;
+  font-family:var(--font-body);
+}
+.stat-label{
+  font-size:13.5px;
+  color:rgba(255,255,255,0.6);
+  margin-top:4px;
+}
+
+/* Enrolled Grid */
+.section-subtitle{
+  font-family:var(--font-serif);
+  font-size:24px;
+  font-weight:400;
+  color:#fff;
+  margin-bottom:24px;
+}
+.course-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:28px;
+}
+
+/* Course Card */
+.course-card{
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  transition:transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s ease, border-color .3s;
+}
+.course-card:hover{
+  transform:translateY(-5px);
+  border-color:rgba(121,220,232,0.35);
+  box-shadow:0 16px 36px rgba(0,0,0,0.5), 0 0 24px rgba(121,220,232,0.15);
+}
+
+.card-media{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  background:#020b17;
+  overflow:hidden;
+}
+.card-media img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.planet-badge{
+  position:absolute;
+  top:14px;
+  right:14px;
+  padding:5px 14px;
+  border-radius:14px;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:0.8px;
+  text-transform:uppercase;
+  line-height:1;
+}
+.planet-badge.earth{background:var(--cyan);color:var(--btn-ink)}
+.planet-badge.venus{background:#f9a84d;color:#271207}
+.planet-badge.mars{background:#e05a5a;color:#fff}
+
+.card-body{
+  padding:24px;
+  display:flex;
+  flex-direction:column;
+  flex:1;
+}
+.card-title{
+  font-family:var(--font-serif);
+  font-size:20px;
+  font-weight:400;
+  line-height:1.3;
+  color:#fff;
+  margin-bottom:10px;
+}
+.card-desc{
+  font-size:14px;
+  line-height:1.55;
+  color:rgba(255,255,255,0.65);
+  margin-bottom:20px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  flex:1;
+}
+
+/* Progress Bar */
+.progress-section{
+  margin-bottom:18px;
+}
+.progress-meta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:12.5px;
+  color:rgba(255,255,255,0.7);
+  margin-bottom:8px;
+}
+.progress-meta .percent{
+  color:var(--cyan);
+  font-weight:600;
+}
+.progress-track{
+  width:100%;
+  height:7px;
+  background:rgba(255,255,255,0.08);
+  border-radius:4px;
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  background:linear-gradient(90deg, #5fd0e1, #79dce8);
+  border-radius:4px;
+  transition:width .8s ease;
+  box-shadow:0 0 10px rgba(121,220,232,0.4);
+}
+
+.enrollment-date{
+  font-size:12px;
+  color:rgba(255,255,255,0.5);
+  margin-bottom:18px;
+}
+
+/* Continue Learning Button */
+.btn-continue{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:46px;
+  border-radius:23px;
+  border:1.5px solid var(--cyan);
+  background:transparent;
+  color:var(--cyan);
+  font-family:var(--font-body);
+  font-weight:600;
+  font-size:14.5px;
+  letter-spacing:0.3px;
+  cursor:pointer;
+  text-decoration:none;
+  transition:all .22s ease;
+}
+.btn-continue:hover{
+  background:rgba(121,220,232,0.12);
+  color:#fff;
+  border-color:#fff;
+  box-shadow:0 0 16px rgba(121,220,232,0.25);
+  transform:translateY(-1px);
+}
+
+/* Empty State */
+.empty-container{
+  text-align:center;
+  padding:80px 24px;
+  background:rgba(255,255,255,0.02);
+  border:1px dashed rgba(255,255,255,0.12);
+  border-radius:24px;
+}
+.rocket-icon-wrapper{
+  width:96px;
+  height:96px;
+  border-radius:50%;
+  background:rgba(121,220,232,0.08);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:24px;
+  border:1px solid rgba(121,220,232,0.25);
+}
+.rocket-icon-wrapper svg{
+  width:48px;
+  height:48px;
+  stroke:var(--cyan);
+}
+.empty-heading{
+  font-family:var(--font-serif);
+  font-size:32px;
+  color:#fff;
+  margin-bottom:10px;
+}
+.empty-sub{
+  font-size:16px;
+  color:rgba(255,255,255,0.65);
+  max-width:440px;
+  margin:0 auto 28px;
+}
+.btn-browse{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px 34px;
+  border-radius:28px;
+  background:linear-gradient(180deg,#ffffff 0%,#d8ecfe 9%,#dceefe 72%,#f4f9ff 100%);
+  color:var(--btn-ink);
+  font-weight:700;
+  font-size:15.5px;
+  text-decoration:none;
+  box-shadow:0 4px 16px rgba(255,255,255,0.2);
+  transition:all .22s ease;
+}
+.btn-browse:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 22px rgba(255,255,255,0.32);
+}
+
+/* Skeletons */
+.skeleton-card{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:20px;
+  overflow:hidden;
+  animation:pulse 1.4s ease-in-out infinite;
+}
+.skeleton-img{
+  width:100%;
+  aspect-ratio:16/9;
+  background:rgba(255,255,255,0.06);
+}
+.skeleton-body{padding:24px;}
+.skeleton-line{
+  height:14px;
+  background:rgba(255,255,255,0.06);
+  border-radius:7px;
+  margin-bottom:12px;
+}
+.skeleton-line.short{width:60%;}
+.skeleton-btn{
+  height:46px;
+  background:rgba(255,255,255,0.06);
+  border-radius:23px;
+  margin-top:20px;
+}
+@keyframes pulse{
+  0%,100%{opacity:0.6}
+  50%{opacity:0.25}
+}
+
+@media(max-width:1024px){
+  .stats-row{grid-template-columns:1fr 1fr;gap:18px;}
+  .stats-row .stat-card:last-child{grid-column:1/-1;}
+  .course-grid{grid-template-columns:repeat(2, 1fr);}
+}
+@media(max-width:768px){
+  .dashboard-wrapper{padding:32px 24px 60px;}
+  .page-title{font-size:36px;}
+  .stats-row{grid-template-columns:1fr;}
+  .stats-row .stat-card:last-child{grid-column:auto;}
+  .course-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="stars-container" aria-hidden="true">
+  <div class="stars"></div>
+</div>
+
+<header class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="/index.html">space<i>edu</i></a>
+    <nav class="nav-links">
+      <a href="/index.html">Planets</a>
+      <a href="/courses.html">Courses</a>
+      <a href="/enrolled.html" class="active">My Courses</a>
+      <div class="nav-auth" id="nav-auth"></div>
+    </nav>
+  </div>
+</header>
+
+<main class="dashboard-wrapper">
+  <header class="dashboard-header">
+    <h1 class="page-title">My Courses</h1>
+    <p class="user-greeting" id="user-greeting">Welcome back, <strong id="greeting-name">Explorer</strong>!</p>
+  </header>
+
+  <!-- Stat Cards -->
+  <section class="stats-row" aria-label="Dashboard Statistics">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value" id="stat-count">0</span>
+        <span class="stat-label">Enrolled Courses</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value" id="stat-hours">0h</span>
+        <span class="stat-label">Total Learning Hours</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value" id="stat-progress">0%</span>
+        <span class="stat-label">Average Completion</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Enrolled Courses Content -->
+  <section aria-labelledby="enrolled-heading">
+    <h2 class="section-subtitle" id="enrolled-heading">Active Expeditions</h2>
+    <div id="enrolled-container">
+      <div class="course-grid">
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-btn"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-btn"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-btn"></div></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  const API_BASE = window.location.origin;
+
+  const token = localStorage.getItem('spaceedu_token');
+  if(!token){
+    window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
+    return;
+  }
+
+  // Render Navbar auth state
+  function renderNavAuth(){
+    const navAuth = document.getElementById('nav-auth');
+    const userStr = localStorage.getItem('spaceedu_user');
+    let userName = 'Astronaut';
+    if(userStr){
+      try {
+        const user = JSON.parse(userStr);
+        if(user.name) userName = user.name;
+      } catch(e){}
+    }
+
+    const firstName = userName.split(' ')[0];
+    document.getElementById('greeting-name').textContent = userName;
+
+    navAuth.innerHTML = `
+      <div class="user-chip">
+        <span>Hi, <span class="user-name">${escapeHTML(firstName)}</span></span>
+        <button class="logout-btn" id="logout-btn" type="button">Logout</button>
+      </div>
+    `;
+
+    document.getElementById('logout-btn').addEventListener('click', function(){
+      localStorage.removeItem('spaceedu_token');
+      localStorage.removeItem('spaceedu_user');
+      window.location.href = '/login.html';
+    });
+  }
+
+  function escapeHTML(str){
+    return String(str).replace(/[&<>'"]/g, tag => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[tag] || tag));
+  }
+
+  // Generate consistent progress per enrollment
+  function getProgressForId(id){
+    const storageKey = 'spaceedu_prog_' + id;
+    let saved = localStorage.getItem(storageKey);
+    if(saved) return parseInt(saved, 10);
+    // Deterministic random between 15% and 85%
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+      hash = (hash << 5) - hash + id.charCodeAt(i);
+      hash |= 0;
+    }
+    const val = 15 + Math.abs(hash % 71);
+    localStorage.setItem(storageKey, val);
+    return val;
+  }
+
+  function formatDate(dStr){
+    if(!dStr) return 'Recently';
+    try {
+      const d = new Date(dStr);
+      return d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+    } catch(e){
+      return 'Recently';
+    }
+  }
+
+  async function loadEnrollments(){
+    const container = document.getElementById('enrolled-container');
+    const statCount = document.getElementById('stat-count');
+    const statHours = document.getElementById('stat-hours');
+    const statProgress = document.getElementById('stat-progress');
+
+    let enrollments = [];
+
+    try {
+      const res = await fetch(`${API_BASE}/api/me/enrollments`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if(res.ok){
+        enrollments = await res.json();
+      } else {
+        throw new Error('API failed');
+      }
+    } catch(err){
+      console.warn('Could not fetch enrollments from API, checking local session or empty:', err);
+      enrollments = [];
+    }
+
+    if(!Array.isArray(enrollments) || enrollments.length === 0){
+      // Render Empty State
+      statCount.textContent = '0';
+      statHours.textContent = '0h';
+      statProgress.textContent = '0%';
+
+      container.innerHTML = `
+        <div class="empty-container">
+          <div class="rocket-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+              <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+              <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+              <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+            </svg>
+          </div>
+          <h3 class="empty-heading">No courses yet</h3>
+          <p class="empty-sub">Start your journey through the cosmos. Explore planetary geology, atmospheres, and mysteries.</p>
+          <a class="btn-browse" href="/courses.html">Browse Courses &rarr;</a>
+        </div>
+      `;
+      return;
+    }
+
+    // Compute stats
+    let totalHours = 0;
+    let totalProgress = 0;
+
+    enrollments.forEach(e => {
+      const c = e.course || {};
+      totalHours += (c.duration_hours || 10);
+      const prog = getProgressForId(e.id || c.id || 'course');
+      totalProgress += prog;
+    });
+
+    const avgProg = Math.round(totalProgress / enrollments.length);
+
+    statCount.textContent = enrollments.length;
+    statHours.textContent = `${totalHours}h`;
+    statProgress.textContent = `${avgProg}%`;
+
+    // Render course grid
+    container.innerHTML = `
+      <div class="course-grid">
+        ${enrollments.map(item => {
+          const c = item.course || {};
+          const planetKey = (c.planet || 'earth').toLowerCase();
+          const img = c.image_url || 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202133_508c64b8-a31e-4290-bdfc-1187df70e0a6.png';
+          const prog = getProgressForId(item.id || c.id || 'course');
+          const dateStr = formatDate(item.enrolled_at);
+
+          return `
+            <article class="course-card">
+              <div class="card-media">
+                <img src="${escapeHTML(img)}" alt="${escapeHTML(c.title || 'Course')}">
+                <span class="planet-badge ${planetKey}">${escapeHTML(planetKey)}</span>
+              </div>
+              <div class="card-body">
+                <h3 class="card-title">${escapeHTML(c.title || 'Space Course')}</h3>
+                <p class="card-desc">${escapeHTML(c.description || 'Comprehensive planetary science training.')}</p>
+
+                <div class="progress-section">
+                  <div class="progress-meta">
+                    <span>Course Progress</span>
+                    <span class="percent">${prog}%</span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-fill" style="width: ${prog}%"></div>
+                  </div>
+                </div>
+
+                <div class="enrollment-date">Enrolled ${escapeHTML(dateStr)}</div>
+
+                <button class="btn-continue" type="button" onclick="alert('Continuing lesson in ${escapeHTML(c.title || 'course')}...')">
+                  Continue Learning
+                </button>
+              </div>
+            </article>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  renderNavAuth();
+  loadEnrollments();
+})();
+</script>
+</body>
+</html>

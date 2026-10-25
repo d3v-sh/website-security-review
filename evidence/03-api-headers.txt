@@ -1,0 +1,9 @@
+HTTP/2 200 
+access-control-allow-credentials: true
+access-control-allow-headers: Content-Type, Authorization
+access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
+alt-svc: h3=":8443"; ma=2592000
+content-type: application/json
+date: Sat, 24 Oct 2026 13:01:34 GMT
+via: 1.1 Caddy
+

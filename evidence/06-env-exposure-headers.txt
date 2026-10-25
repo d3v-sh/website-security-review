@@ -1,0 +1,12 @@
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-credentials: true
+access-control-allow-headers: Content-Type, Authorization
+access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
+alt-svc: h3=":8443"; ma=2592000
+content-type: text/plain; charset=utf-8
+date: Sat, 24 Oct 2026 13:01:47 GMT
+last-modified: Fri, 23 Oct 2026 00:47:07 GMT
+via: 1.1 Caddy
+content-length: 161
+

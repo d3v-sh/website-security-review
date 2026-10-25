@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign In / Register — SpaceEdu</title>
+<meta name="description" content="Access your SpaceEdu account to continue exploring the solar system with immersive courses.">
+<link rel="icon" href="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202005_3346cc4d-ec3b-44ab-825c-b18e49f5021a.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prata&family=Hanken+Grotesk:wght@400;500;600;700&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#04101f;
+  --ink:#ffffff;
+  --cyan:#79dce8;
+  --cyan-logo:#5fd0e1;
+  --btn-ink:#071227;
+  --font-serif:'Prata',Georgia,serif;
+  --font-body:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
+  --font-logo:'Poppins',sans-serif;
+}
+html,body{
+  min-height:100%;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+}
+body{
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  position:relative;
+  overflow-x:hidden;
+}
+
+/* Starfield animation */
+.stars-container{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  overflow:hidden;
+}
+.stars{
+  position:absolute;
+  inset:0;
+  background-image:
+    radial-gradient(1px 1px at 25px 35px, #ffffff, transparent),
+    radial-gradient(1px 1px at 85px 120px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 150px 75px, #79dce8, transparent),
+    radial-gradient(1px 1px at 220px 190px, #ffffff, transparent),
+    radial-gradient(2px 2px at 310px 40px, rgba(255,255,255,0.9), transparent),
+    radial-gradient(1px 1px at 390px 145px, rgba(121,220,232,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 450px 220px, #ffffff, transparent),
+    radial-gradient(1px 1px at 540px 90px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(2px 2px at 620px 180px, #79dce8, transparent),
+    radial-gradient(1px 1px at 700px 30px, #ffffff, transparent),
+    radial-gradient(1px 1px at 790px 130px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1.5px 1.5px at 860px 240px, #ffffff, transparent),
+    radial-gradient(1px 1px at 940px 70px, rgba(121,220,232,0.8), transparent),
+    radial-gradient(2px 2px at 1020px 160px, #ffffff, transparent),
+    radial-gradient(1px 1px at 1100px 95px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 1190px 210px, #79dce8, transparent),
+    radial-gradient(1px 1px at 1260px 45px, #ffffff, transparent),
+    radial-gradient(2px 2px at 1340px 130px, rgba(255,255,255,0.9), transparent);
+  background-size: 600px 300px;
+  animation: twinkle 5s ease-in-out infinite alternate;
+}
+.stars-layer2{
+  position:absolute;
+  inset:0;
+  background-image:
+    radial-gradient(1px 1px at 40px 80px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 180px 210px, rgba(121,220,232,0.7), transparent),
+    radial-gradient(1px 1px at 290px 110px, #ffffff, transparent),
+    radial-gradient(2px 2px at 410px 270px, rgba(255,255,255,0.9), transparent),
+    radial-gradient(1px 1px at 510px 45px, #ffffff, transparent),
+    radial-gradient(1.5px 1.5px at 640px 230px, #79dce8, transparent),
+    radial-gradient(1px 1px at 770px 90px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 890px 180px, #ffffff, transparent),
+    radial-gradient(1px 1px at 980px 260px, rgba(121,220,232,0.6), transparent),
+    radial-gradient(1.5px 1.5px at 1080px 120px, #ffffff, transparent),
+    radial-gradient(1px 1px at 1220px 70px, rgba(255,255,255,0.7), transparent);
+  background-size: 750px 350px;
+  animation: twinkle 7s ease-in-out infinite alternate-reverse;
+  opacity:0.8;
+}
+@keyframes twinkle{
+  0%{opacity:0.35;transform:scale(0.998)}
+  50%{opacity:0.85;transform:scale(1)}
+  100%{opacity:0.5;transform:scale(1.002)}
+}
+
+/* Top simple navbar */
+.auth-header{
+  position:relative;
+  z-index:10;
+  height:70px;
+  padding:0 32px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  background:rgba(4,16,31,0.5);
+  backdrop-filter:blur(20px);
+}
+.logo{
+  font-family:var(--font-logo);
+  font-weight:600;
+  font-size:20px;
+  letter-spacing:-0.2px;
+  line-height:1;
+  color:#fff;
+  text-decoration:none;
+}
+.logo i{
+  font-style:normal;
+  color:var(--cyan-logo);
+}
+.nav-back-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  color:rgba(255,255,255,0.7);
+  font-size:14px;
+  font-weight:500;
+  text-decoration:none;
+  transition:color .2s;
+}
+.nav-back-link:hover{
+  color:var(--cyan);
+}
+
+/* Main Container */
+.auth-wrapper{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px 60px;
+  position:relative;
+  z-index:5;
+}
+
+/* Radial Glow behind Card */
+.glow-backdrop{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:640px;
+  height:640px;
+  background:radial-gradient(circle, rgba(121,220,232,0.12) 0%, rgba(95,208,225,0.04) 45%, transparent 70%);
+  pointer-events:none;
+  z-index:-1;
+}
+
+/* Card */
+.auth-card{
+  width:100%;
+  max-width:480px;
+  background:rgba(255,255,255,0.03);
+  backdrop-filter:blur(40px);
+  -webkit-backdrop-filter:blur(40px);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:24px;
+  padding:44px 44px 40px;
+  box-shadow:
+    0 20px 50px rgba(0,0,0,0.5),
+    0 0 40px rgba(121,220,232,0.05),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  position:relative;
+  animation:cardFadeIn .6s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes cardFadeIn{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Header inside card */
+.card-header{
+  text-align:center;
+  margin-bottom:32px;
+}
+.card-logo{
+  font-family:var(--font-logo);
+  font-weight:600;
+  font-size:32px;
+  letter-spacing:-0.4px;
+  line-height:1;
+  color:#fff;
+  text-decoration:none;
+  display:inline-block;
+  margin-bottom:12px;
+}
+.card-logo i{
+  font-style:normal;
+  color:var(--cyan-logo);
+}
+.card-subtitle{
+  font-size:14px;
+  color:rgba(255,255,255,0.65);
+  font-weight:400;
+}
+
+/* Tabs */
+.tab-switcher{
+  display:flex;
+  border-bottom:1px solid rgba(255,255,255,0.12);
+  margin-bottom:28px;
+  position:relative;
+}
+.tab-btn{
+  flex:1;
+  background:none;
+  border:none;
+  padding:14px 16px;
+  font-family:var(--font-body);
+  font-size:15px;
+  font-weight:600;
+  color:rgba(255,255,255,0.55);
+  cursor:pointer;
+  transition:color .25s ease;
+  position:relative;
+  text-align:center;
+}
+.tab-btn:hover{
+  color:rgba(255,255,255,0.9);
+}
+.tab-btn.active{
+  color:var(--cyan);
+}
+.tab-btn.active::after{
+  content:'';
+  position:absolute;
+  bottom:-1px;
+  left:0;
+  right:0;
+  height:2.5px;
+  background:var(--cyan);
+  border-radius:2px 2px 0 0;
+  box-shadow:0 0 10px rgba(121,220,232,0.6);
+}
+
+/* Forms */
+.auth-form{
+  display:none;
+}
+.auth-form.active{
+  display:block;
+  animation:formFade .3s ease both;
+}
+@keyframes formFade{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.form-group{
+  margin-bottom:20px;
+}
+.form-label{
+  display:block;
+  font-size:13px;
+  font-weight:500;
+  color:rgba(255,255,255,0.85);
+  margin-bottom:8px;
+  letter-spacing:0.2px;
+}
+.form-input{
+  width:100%;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:12px;
+  padding:14px 18px;
+  color:#fff;
+  font-family:var(--font-body);
+  font-size:15px;
+  transition:all .2s ease;
+}
+.form-input::placeholder{
+  color:rgba(255,255,255,0.28);
+}
+.form-input:focus{
+  outline:none;
+  border-color:var(--cyan);
+  background:rgba(255,255,255,0.07);
+  box-shadow:0 0 0 3px rgba(121,220,232,0.15);
+}
+
+/* Buttons */
+.submit-btn{
+  width:100%;
+  height:52px;
+  border-radius:26px;
+  border:none;
+  background:linear-gradient(135deg, #79dce8 0%, #5fd0e1 100%);
+  color:var(--btn-ink);
+  font-family:var(--font-body);
+  font-weight:700;
+  font-size:16px;
+  letter-spacing:0.5px;
+  cursor:pointer;
+  transition:all .25s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 4px 16px rgba(121,220,232,0.25);
+  margin-top:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+.submit-btn:hover{
+  filter:brightness(1.08);
+  transform:translateY(-1px);
+  box-shadow:0 6px 22px rgba(121,220,232,0.38);
+}
+.submit-btn:active{
+  transform:translateY(0);
+}
+.submit-btn:disabled{
+  opacity:0.6;
+  cursor:not-allowed;
+  transform:none;
+}
+
+/* Spinner */
+.spinner{
+  display:none;
+  width:18px;
+  height:18px;
+  border:2.5px solid rgba(7,18,39,0.3);
+  border-top-color:#071227;
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+/* Error message */
+.error-msg{
+  display:none;
+  margin-top:16px;
+  padding:12px 14px;
+  border-radius:10px;
+  background:rgba(255,107,107,0.12);
+  border:1px solid rgba(255,107,107,0.3);
+  color:#ff6b6b;
+  font-size:13.5px;
+  font-weight:500;
+  text-align:center;
+  animation:shake .3s ease;
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%,60%{transform:translateX(-4px)}
+  40%,80%{transform:translateX(4px)}
+}
+
+/* Toggle Link */
+.toggle-account{
+  margin-top:24px;
+  text-align:center;
+  font-size:13.5px;
+  color:rgba(255,255,255,0.65);
+}
+.toggle-btn{
+  background:none;
+  border:none;
+  color:var(--cyan);
+  font-family:inherit;
+  font-size:inherit;
+  font-weight:600;
+  cursor:pointer;
+  text-decoration:none;
+  margin-left:4px;
+  transition:color .2s;
+}
+.toggle-btn:hover{
+  text-decoration:underline;
+  color:#a5eff8;
+}
+
+/* Back Link */
+.back-home-link{
+  display:block;
+  text-align:center;
+  margin-top:20px;
+  color:rgba(255,255,255,0.5);
+  font-size:13px;
+  text-decoration:none;
+  transition:color .2s;
+}
+.back-home-link:hover{
+  color:#fff;
+}
+
+@media(max-width:540px){
+  .auth-card{
+    padding:32px 24px 28px;
+    border-radius:20px;
+  }
+  .card-logo{
+    font-size:28px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="stars-container" aria-hidden="true">
+  <div class="stars"></div>
+  <div class="stars-layer2"></div>
+</div>
+
+<header class="auth-header">
+  <a class="logo" href="/index.html">space<i>edu</i></a>
+  <a class="nav-back-link" href="/index.html">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    <span>Home</span>
+  </a>
+</header>
+
+<main class="auth-wrapper">
+  <div class="glow-backdrop" aria-hidden="true"></div>
+
+  <div class="auth-card">
+    <div class="card-header">
+      <a class="card-logo" href="/index.html">space<i>edu</i></a>
+      <p class="card-subtitle" id="card-desc">Sign in to your mission control</p>
+    </div>
+
+    <div class="tab-switcher" role="tablist">
+      <button class="tab-btn active" id="tab-login" role="tab" aria-selected="true" type="button">Sign In</button>
+      <button class="tab-btn" id="tab-register" role="tab" aria-selected="false" type="button">Create Account</button>
+    </div>
+
+    <!-- Sign In Form -->
+    <form class="auth-form active" id="form-login" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="login-email">Email Address</label>
+        <input class="form-input" type="email" id="login-email" placeholder="name@example.com" autocomplete="email" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="login-password">Password</label>
+        <input class="form-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+
+      <button class="submit-btn" type="submit" id="login-submit">
+        <span>Sign In</span>
+        <div class="spinner" id="login-spinner"></div>
+      </button>
+
+      <div class="error-msg" id="login-error" role="alert"></div>
+
+      <div class="toggle-account">
+        Don&rsquo;t have an account? <button type="button" class="toggle-btn" id="switch-to-register">Create one</button>
+      </div>
+    </form>
+
+    <!-- Create Account Form -->
+    <form class="auth-form" id="form-register" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="reg-name">Full Name</label>
+        <input class="form-input" type="text" id="reg-name" placeholder="Carl Sagan" autocomplete="name" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="reg-email">Email Address</label>
+        <input class="form-input" type="email" id="reg-email" placeholder="name@example.com" autocomplete="email" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="reg-password">Password</label>
+        <input class="form-input" type="password" id="reg-password" placeholder="Min. 6 characters" autocomplete="new-password" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="reg-confirm">Confirm Password</label>
+        <input class="form-input" type="password" id="reg-confirm" placeholder="Repeat password" autocomplete="new-password" required>
+      </div>
+
+      <button class="submit-btn" type="submit" id="reg-submit">
+        <span>Create Account</span>
+        <div class="spinner" id="reg-spinner"></div>
+      </button>
+
+      <div class="error-msg" id="reg-error" role="alert"></div>
+
+      <div class="toggle-account">
+        Already have an account? <button type="button" class="toggle-btn" id="switch-to-login">Sign in</button>
+      </div>
+    </form>
+
+    <a class="back-home-link" href="/index.html">&larr; Back to Home</a>
+  </div>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  const API_BASE = window.location.origin;
+
+
+  // DOM Elements
+  const tabLogin = document.getElementById('tab-login');
+  const tabRegister = document.getElementById('tab-register');
+  const formLogin = document.getElementById('form-login');
+  const formRegister = document.getElementById('form-register');
+  const cardDesc = document.getElementById('card-desc');
+  const switchToRegister = document.getElementById('switch-to-register');
+  const switchToLogin = document.getElementById('switch-to-login');
+
+  const loginEmail = document.getElementById('login-email');
+  const loginPassword = document.getElementById('login-password');
+  const loginSubmit = document.getElementById('login-submit');
+  const loginSpinner = document.getElementById('login-spinner');
+  const loginError = document.getElementById('login-error');
+
+  const regName = document.getElementById('reg-name');
+  const regEmail = document.getElementById('reg-email');
+  const regPassword = document.getElementById('reg-password');
+  const regConfirm = document.getElementById('reg-confirm');
+  const regSubmit = document.getElementById('reg-submit');
+  const regSpinner = document.getElementById('reg-spinner');
+  const regError = document.getElementById('reg-error');
+
+  function clearErrors(){
+    loginError.style.display = 'none';
+    loginError.textContent = '';
+    regError.style.display = 'none';
+    regError.textContent = '';
+  }
+
+  function setTab(mode){
+    clearErrors();
+    if(mode === 'login'){
+      tabLogin.classList.add('active');
+      tabLogin.setAttribute('aria-selected', 'true');
+      tabRegister.classList.remove('active');
+      tabRegister.setAttribute('aria-selected', 'false');
+      formLogin.classList.add('active');
+      formRegister.classList.remove('active');
+      cardDesc.textContent = 'Sign in to your mission control';
+      loginEmail.focus();
+    } else {
+      tabRegister.classList.add('active');
+      tabRegister.setAttribute('aria-selected', 'true');
+      tabLogin.classList.remove('active');
+      tabLogin.setAttribute('aria-selected', 'false');
+      formRegister.classList.add('active');
+      formLogin.classList.remove('active');
+      cardDesc.textContent = 'Begin your journey across the cosmos';
+      regName.focus();
+    }
+  }
+
+  tabLogin.addEventListener('click', () => setTab('login'));
+  tabRegister.addEventListener('click', () => setTab('register'));
+  switchToRegister.addEventListener('click', () => setTab('register'));
+  switchToLogin.addEventListener('click', () => setTab('login'));
+
+  // Check URL query parameters (e.g. ?mode=register)
+  const urlParams = new URLSearchParams(window.location.search);
+  if(urlParams.get('mode') === 'register'){
+    setTab('register');
+  }
+
+  // Handle Login Submit
+  formLogin.addEventListener('submit', async function(e){
+    e.preventDefault();
+    clearErrors();
+
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value;
+
+    if(!email || !password){
+      loginError.textContent = 'Please enter both email and password.';
+      loginError.style.display = 'block';
+      return;
+    }
+
+    loginSubmit.disabled = true;
+    loginSpinner.style.display = 'inline-block';
+
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({email, password})
+      });
+      const data = await res.json();
+
+      if(!res.ok){
+        throw new Error(data.error || 'Failed to sign in. Please verify your credentials.');
+      }
+
+      localStorage.setItem('spaceedu_token', data.token);
+      localStorage.setItem('spaceedu_user', JSON.stringify(data.user));
+
+      const redirect = urlParams.get('redirect') || '/courses.html';
+      window.location.href = redirect;
+    } catch(err){
+      loginError.textContent = err.message;
+      loginError.style.display = 'block';
+    } finally {
+      loginSubmit.disabled = false;
+      loginSpinner.style.display = 'none';
+    }
+  });
+
+  // Handle Register Submit
+  formRegister.addEventListener('submit', async function(e){
+    e.preventDefault();
+    clearErrors();
+
+    const name = regName.value.trim();
+    const email = regEmail.value.trim();
+    const password = regPassword.value;
+    const confirm = regConfirm.value;
+
+    if(!name || !email || !password){
+      regError.textContent = 'Please complete all fields.';
+      regError.style.display = 'block';
+      return;
+    }
+    if(password.length < 6){
+      regError.textContent = 'Password must be at least 6 characters.';
+      regError.style.display = 'block';
+      return;
+    }
+    if(password !== confirm){
+      regError.textContent = 'Passwords do not match.';
+      regError.style.display = 'block';
+      return;
+    }
+
+    regSubmit.disabled = true;
+    regSpinner.style.display = 'inline-block';
+
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/register`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name, email, password})
+      });
+      const data = await res.json();
+
+      if(!res.ok){
+        throw new Error(data.error || 'Failed to create account.');
+      }
+
+      localStorage.setItem('spaceedu_token', data.token);
+      localStorage.setItem('spaceedu_user', JSON.stringify(data.user));
+
+      const redirect = urlParams.get('redirect') || '/courses.html';
+      window.location.href = redirect;
+    } catch(err){
+      regError.textContent = err.message;
+      regError.style.display = 'block';
+    } finally {
+      regSubmit.disabled = false;
+      regSpinner.style.display = 'none';
+    }
+  });
+})();
+</script>
+</body>
+</html>

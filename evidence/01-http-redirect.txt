@@ -1,0 +1,5 @@
+HTTP/1.1 301 Moved Permanently
+Location: https://localhost:8443/index.html
+Server: Caddy
+Date: Sat, 24 Oct 2026 13:01:18 GMT
+

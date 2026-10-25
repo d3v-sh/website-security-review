@@ -1,0 +1,24 @@
+version: '3.9'
+
+services:
+  spaceedu-db:
+    image: postgres:16-alpine
+    container_name: spaceedu-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: spaceedu
+      POSTGRES_USER: spaceedu
+      POSTGRES_PASSWORD: spaceedu_secret
+    ports:
+      - "5433:5432"   # 5433 on host to avoid clash with any local postgres
+    volumes:
+      - spaceedu_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spaceedu -d spaceedu"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  spaceedu_pgdata:
+    name: spaceedu_pgdata

@@ -1,0 +1,13 @@
+{
+	http_port 8081
+	https_port 8443
+}
+
+http://localhost:8081 {
+	redir https://localhost:8443{uri} permanent
+}
+
+localhost:8443 {
+	tls internal
+	reverse_proxy localhost:8080
+}
