@@ -13,7 +13,7 @@ No third-party target was supplied, so I built a local demo application (SpaceEd
 - **Target:** my own application, running on my own machine. No third-party system is involved.
 - **In scope:** viewing pages, reading response headers (browser DevTools, single `curl` requests), inspecting the TLS certificate, browser storage and cookies, reading page source, normal use of signup/login/checkout with a test card, replaying my own unmodified requests in Burp Suite Repeater.
 - **Out of scope:** port scans, directory brute-forcing, fuzzing, exploit attempts, authentication bypass, brute-force or rate-limit testing, injection payloads, load generation, automated scanners (Burp Scanner and Intruder were not used), and any non-local host.
-
+- Full scope note: [`docs/scope-and-authorisation.md`](docs/scope-and-authorisation.md)
 
 ## Approach
 
